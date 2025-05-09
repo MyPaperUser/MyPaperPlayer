@@ -1,0 +1,59 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:svg="clr-namespace:Avalonia.Svg;assembly=Avalonia.Svg"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="MyPaperPlayer.MainWindow"
+        Title="MyPaperPlayer">
+
+  <DockPanel>
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="_Datei">
+        <MenuItem Header="_Öffnen..." />
+        <MenuItem Header="_Beenden" />
+      </MenuItem>
+      <MenuItem Header="_Ansicht">
+        <MenuItem Header="Warteschlange anzeigen" IsChecked="True" />
+      </MenuItem>
+      <MenuItem Header="_Hilfe">
+        <MenuItem Header="Über..." />
+      </MenuItem>
+    </Menu>
+
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical" Margin="10">
+
+      <!-- Zeitleiste -->
+      <Slider Minimum="0" Maximum="100" x:Name="SldTime"/>
+      <Grid x:Name="TimesGrid">
+        <Label x:Name="CurrentTimeLabel" Content="00:00 / - 00:00" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+        <Label x:Name="TotalTimeLabel" Content="00:00" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"/>
+      </Grid>
+
+      <!-- Buttons -->
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0" Spacing="20">
+        <Button ToolTip.Tip="Zurück" Click="BtnBack_Click">
+          <Image Width="24" Height="24" Source="/Assets/Icons/skip-back.png" />
+        </Button>
+        <Button ToolTip.Tip="Abspielen / Pause" Click="BtnPlay_Click">
+          <Image Width="32" Height="32" Source="/Assets/Icons/play.png" />
+        </Button>
+        <Button ToolTip.Tip="Weiter" Click="BtnNext_Click">
+          <Image Width="24" Height="24" Source="/Assets/Icons/skip-forward.png" />
+        </Button>
+      </StackPanel>
+    </StackPanel>
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="250"/>
+      </Grid.ColumnDefinitions>
+
+      <ListBox Grid.Column="0"
+        x:Name="QueueListBox"
+        Margin="10,5,5,5"/>
+    </Grid>
+
+  </DockPanel>
+</Window>
