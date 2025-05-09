@@ -20,6 +20,7 @@ public class AudioBackend
     public bool QueueChanged = true;
 
     public AudioTrack? CurrentTrack => _currentTrack;
+    public bool IsPlaying => _mediaPlayer.IsPlaying;
 
     public AudioBackend()
     {
@@ -44,6 +45,12 @@ public class AudioBackend
         if (_mediaPlayer.IsPlaying)
             return;
 
+        if (_mediaPlayer.State == VLCState.Paused)
+        {
+            _mediaPlayer.Play(); // Fortsetzen
+            return;
+        }
+        
         PlayNext();
     }
 

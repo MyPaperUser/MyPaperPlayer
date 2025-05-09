@@ -72,3 +72,4 @@
 /home/fierke/Nextcloud/Documents/source/repos/MyPaperPlayer/MyPaperPlayer/obj/Debug/net9.0/MyPaperPlayer.genruntimeconfig.cache
 /home/fierke/Nextcloud/Documents/source/repos/MyPaperPlayer/MyPaperPlayer/obj/Debug/net9.0/ref/MyPaperPlayer.dll
 /home/fierke/Nextcloud/Documents/source/repos/MyPaperPlayer/MyPaperPlayer/bin/Debug/net9.0/TagLibSharp.dll
+/home/fierke/Nextcloud/Documents/source/repos/MyPaperPlayer/MyPaperPlayer/obj/Debug/net9.0/MyPaperPlayer.sourcelink.json

@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using MyPaperPlayer.Audio;
 using System;
@@ -23,7 +24,7 @@ public partial class MainWindow : Window
         // Timer zur GUI-Aktualisierung starten
         guiTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromMilliseconds(100)
+            Interval = TimeSpan.FromMilliseconds(50)
         };
         guiTimer.Tick += (s, e) => RefreshGUI();
         guiTimer.Start();
@@ -71,10 +72,57 @@ public partial class MainWindow : Window
                 
                 player.QueueChanged = false;
             }
+
+            AdaptPlayButtonIcon();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"GUI-Update-Fehler: {ex.Message}");
         }
     }
+
+    public void BtnPlay_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+
+        if (player.IsPlaying)
+        {
+            player.Pause();
+            //BtnPlay.Content = "Play";
+        }
+        else
+        {
+            player.Play();
+            //BtnPlay.Content = "Pause";
+        }
+    }
+
+    
+    public void BtnNext_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        
+    }
+    
+    public void BtnBack_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        
+    }
+
+    public void BtnStop_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        player.Stop();
+    }
+
+    public void AdaptPlayButtonIcon(){
+        if(player.IsPlaying)
+        {
+            BtnPlayIcon.Source = new Bitmap("Assets/Icons/pause.png");
+            
+        }
+        else
+        {
+            BtnPlayIcon.Source = new Bitmap("Assets/Icons/play.png");
+
+        }
+    }
+    
 }

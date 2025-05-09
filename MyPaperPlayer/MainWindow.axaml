@@ -32,14 +32,17 @@
 
       <!-- Buttons -->
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0" Spacing="20">
-        <Button ToolTip.Tip="Zurück" Click="BtnBack_Click">
-          <Image Width="24" Height="24" Source="/Assets/Icons/skip-back.png" />
+        <Button ToolTip.Tip="Zurück" Click="BtnBack_Click" x:Name="BtnBack">
+          <Image x:Name="BtnBackIcon" Width="24" Height="24" Source="/Assets/Icons/skip-back.png" />
         </Button>
-        <Button ToolTip.Tip="Abspielen / Pause" Click="BtnPlay_Click">
-          <Image Width="32" Height="32" Source="/Assets/Icons/play.png" />
+        <Button ToolTip.Tip="Abspielen / Pause" Click="BtnPlay_Click" x:Name="BtnPlay">
+          <Image x:Name="BtnPlayIcon" Width="32" Height="32" Source="/Assets/Icons/play.png" />
         </Button>
-        <Button ToolTip.Tip="Weiter" Click="BtnNext_Click">
-          <Image Width="24" Height="24" Source="/Assets/Icons/skip-forward.png" />
+        <Button ToolTip.Tip="Stop" Click="BtnStop_Click" x:Name="BtnStop">
+          <Image x:Name="BtnStopIcon" Width="24" Height="24" Source="/Assets/Icons/square.png" />
+        </Button>
+        <Button ToolTip.Tip="Weiter" Click="BtnNext_Click" x:Name="BtnNext">
+          <Image x:Name="BtnNextIcon" Width="24" Height="24" Source="/Assets/Icons/skip-forward.png" />
         </Button>
       </StackPanel>
     </StackPanel>
