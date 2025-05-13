@@ -55,6 +55,7 @@
 
       <ListBox Grid.Column="0"
         x:Name="QueueListBox"
+        ItemsSource="{Binding QueueItems}"
         Margin="10,5,5,5"/>
     </Grid>
 

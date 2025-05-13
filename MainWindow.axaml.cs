@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using MyPaperPlayer.Audio;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 
 namespace MyPaperPlayer;
@@ -59,15 +60,21 @@ public partial class MainWindow : Window
             // Queue aktualisieren, falls sich was geändert hat
             if (player.QueueChanged)
             {
-                QueueListBox.Items.Clear();
-                foreach(var track in player._queue)
+                //QueueListBox.Items.Clear();
+                // foreach(var track in player._queue)
+                // {
+                //     var item = new ListBoxItem
+                //     {
+                //         Content = Path.GetFileName(track.Path),
+                //         Tag = track
+                //     };
+                //     QueueListBox.Items.Add(item);
+                // }
+
+                QueueItems.Clear();
+                foreach (var track in player._queue)
                 {
-                    var item = new ListBoxItem
-                    {
-                        Content = Path.GetFileName(track.Path),
-                        Tag = track
-                    };
-                    QueueListBox.Items.Add(item);
+                    QueueItems.Add(track);
                 }
                 
                 player.QueueChanged = false;
@@ -80,6 +87,9 @@ public partial class MainWindow : Window
             Console.WriteLine($"GUI-Update-Fehler: {ex.Message}");
         }
     }
+
+    public ObservableCollection<AudioTrack> QueueItems { get; } = new();
+
 
     public void BtnPlay_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
