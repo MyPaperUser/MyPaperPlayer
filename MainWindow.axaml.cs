@@ -5,17 +5,19 @@ using MyPaperPlayer.Audio;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-
+using MyPaperPlayer.ViewModels;
 namespace MyPaperPlayer;
 
 public partial class MainWindow : Window
 {
     internal AudioBackend player;
     private DispatcherTimer guiTimer;
+    public MainViewModel ViewModel { get; } = new();
 
     public MainWindow()
     {
         InitializeComponent();
+        DataContext = ViewModel;
 
         player = new AudioBackend();
         AudioTrack track = new AudioTrack("/home/fierke/Nextcloud/Music/Ableton/_export/250501 - ATest 147.wav");
