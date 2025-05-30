@@ -4,6 +4,7 @@
         xmlns:svg="clr-namespace:Avalonia.Svg;assembly=Avalonia.Svg"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:MyPaperPlayer.ViewModels"
+        xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
         x:DataType="vm:MainViewModel"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="MyPaperPlayer.MainWindow"
@@ -55,17 +56,23 @@
         <ColumnDefinition Width="250"/>
       </Grid.ColumnDefinitions>
 
-      <ListBox ItemsSource="{Binding Queue}">
-          <ListBox.ItemTemplate>
-              <DataTemplate>
-                  <StackPanel Orientation="Horizontal" Spacing="10">
-                      <TextBlock Text="{Binding Title}" />
-                      <TextBlock Text="|" />
-                      <TextBlock Text="{Binding Length}" />
-                  </StackPanel>
-              </DataTemplate>
-          </ListBox.ItemTemplate>
-      </ListBox>
+      <DataGrid ItemsSource="{Binding Queue}" x:Name="QueueDataGrid" Grid.Column="0" AutoGenerateColumns="False" GridLinesVisibility="All"
+          BorderThickness="1" Margin="10" >
+          <DataGrid.Columns>
+              <DataGridTextColumn Header="Titel" Binding="{Binding Title}" Width="*"/>
+              <DataGridTextColumn Header="Länge" Binding="{Binding Length}" Width="*"/>
+          </DataGrid.Columns>
+      </DataGrid>
+
+      <StackPanel Grid.Column="1" Margin="10">
+        <Button Content="Hinzufügen" Click="BtnAddFiles_Click" Margin="0,0,0,10"/>
+        <Button Content="Entfernen" Click="BtnRemoveSelected_Click" Margin="0,0,0,10"/>
+        <Button Content="Leeren" Click="BtnClearQueue_Click" Margin="0,0,0,10"/>
+        <Button Content="Sortieren" Click="BtnSortQueue_Click" Margin="0,0,0,10"/>
+        <Button Content="Zufall" Click="BtnShuffleQueue_Click" Margin="0,0,0,10"/>
+        <Button Content="Infofenster erzeugen" Click="BtnShowInfo_Click" Margin="0,0,0,10"/>
+        <!-- <Button Content="Einstellungen" Click="BtnSettings_Click" Margin="0,0,0,10"/> -->
+      </StackPanel>
 
     </Grid>
 

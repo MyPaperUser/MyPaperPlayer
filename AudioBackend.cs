@@ -36,8 +36,35 @@ public class AudioBackend
     public void Enqueue(AudioTrack track)
     {
         Queue.Add(track);
+        //MainWindow._instance.ViewModel.Queue.Add(track);
         if (CurrentTrack == null)
             Play();
+        QueueChanged = true;
+    }
+
+    public void ClearQueue()
+    {
+        Queue.Clear();
+        QueueChanged = true;
+    }
+
+    public void SortQueue(List<AudioTrack> sortedTracks)
+    {
+        Queue.Clear();
+        foreach (var track in sortedTracks)
+        {
+            Queue.Add(track);
+        }
+        QueueChanged = true;
+    }
+
+    public void RemoveFromQueue(AudioTrack track)
+    {
+        var trackToRemove = Queue.FirstOrDefault(t => t == track);
+        if (trackToRemove != null)
+        {
+            Queue.Remove(trackToRemove);
+        }
         QueueChanged = true;
     }
 
