@@ -12,19 +12,23 @@ public partial class MainWindow : Window
 {
     internal AudioBackend player;
     private DispatcherTimer guiTimer;
+    //public MainViewModel ViewModel { get; } = new();
     public MainViewModel ViewModel { get; } = new();
-
     public MainWindow()
     {
         InitializeComponent();
         DataContext = ViewModel;
 
         player = new AudioBackend();
-        AudioTrack track = new AudioTrack("/home/fierke/Nextcloud/Music/Ableton/_export/250501 - ATest 147.wav");
-        player.Enqueue(track);
-        player.Play();
 
-        // Timer zur GUI-Aktualisierung starten
+        var track = new AudioTrack("/home/fierke/Nextcloud/Music/Ableton/_export/250501 - ATest 147.wav");
+        player.Enqueue(track);
+
+        // ViewModel.Queue ist die ObservableCollection, an die die ListBox gebunden ist
+        ViewModel.Queue.Add(track);
+
+        player.Play();
+    
         guiTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(50)
@@ -32,7 +36,6 @@ public partial class MainWindow : Window
         guiTimer.Tick += (s, e) => RefreshGUI();
         guiTimer.Start();
     }
-
     public void Exit(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         Environment.Exit(0);
@@ -73,11 +76,11 @@ public partial class MainWindow : Window
                 //     QueueListBox.Items.Add(item);
                 // }
 
-                QueueItems.Clear();
-                foreach (var track in player._queue)
-                {
-                    QueueItems.Add(track);
-                }
+                // QueueItems.Clear();
+                // foreach (var track in player.Queue)
+                // {
+                //     QueueItems.Add(track);
+                // }
                 
                 player.QueueChanged = false;
             }

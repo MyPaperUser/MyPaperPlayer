@@ -5,25 +5,16 @@ using MyPaperPlayer.Audio;
 
 namespace MyPaperPlayer.ViewModels;
 
-public class MainViewModel : INotifyPropertyChanged
+public class MainViewModel
 {
-    public ObservableCollection<AudioTrack> Queue { get; } = new();
+    public AudioBackend Backend { get; } = new();
 
-    private AudioTrack? _currentTrack;
-    public AudioTrack? CurrentTrack
-    {
-        get => _currentTrack;
-        set
-        {
-            if (_currentTrack != value)
-            {
-                _currentTrack = value;
-                OnPropertyChanged();
-            }
-        }
-    }
+    public ObservableCollection<AudioTrack> Queue => Backend.Queue;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    public void EnqueueTrack(AudioTrack track) => Backend.Enqueue(track);
+
+    public void Play() => Backend.Play();
+    public void Next() => Backend.PlayNext();
+    public void Previous() => Backend.PlayPrevious();
 }
+

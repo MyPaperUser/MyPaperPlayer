@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -14,12 +15,14 @@ public class AudioBackend
 {
     private readonly LibVLC _libVLC;
     private readonly MediaPlayer _mediaPlayer;
-    public readonly Queue<AudioTrack> _queue = new();
-    private AudioTrack? _currentTrack;
-    private CancellationTokenSource? _fadeCts;
     public bool QueueChanged = true;
 
-    public AudioTrack? CurrentTrack => _currentTrack;
+    public ObservableCollection<AudioTrack> Queue { get; } = new();
+    public int CurrentIndex { get; private set; } = -1;
+    public AudioTrack? CurrentTrack => (CurrentIndex >= 0 && CurrentIndex < Queue.Count)
+        ? Queue[CurrentIndex]
+        : null;
+
     public bool IsPlaying => _mediaPlayer.IsPlaying;
 
     public AudioBackend()
@@ -32,67 +35,104 @@ public class AudioBackend
 
     public void Enqueue(AudioTrack track)
     {
-        _queue.Enqueue(track);
-        QueueChanged = true;
-        if (_currentTrack == null)
-        {
+        Queue.Add(track);
+        if (CurrentTrack == null)
             Play();
-        }
+        QueueChanged = true;
     }
 
     public void Play()
     {
-        if (_mediaPlayer.IsPlaying)
+        if (_mediaPlayer.IsPlaying || Queue.Count == 0)
             return;
 
         if (_mediaPlayer.State == VLCState.Paused)
         {
-            _mediaPlayer.Play(); // Fortsetzen
+            _mediaPlayer.Play();
             return;
         }
-        
-        PlayNext();
+
+        if (CurrentIndex == -1)
+            CurrentIndex = 0;
+
+        QueueChanged = true;
+
+        PlayCurrent();
     }
 
-    private void PlayNext()
+    public void PlayCurrent()
     {
-        if (_queue.Count == 0)
-        {
-            _currentTrack = null;
+        if (CurrentTrack == null)
             return;
-        }
 
-        _currentTrack = _queue.Dequeue();
-        QueueChanged = true;
-        using var media = new Media(_libVLC, _currentTrack.Path, FromType.FromPath);
+        using var media = new Media(_libVLC, CurrentTrack.Path, FromType.FromPath);
         _mediaPlayer.Media = media;
         _mediaPlayer.Play();
+
+        QueueChanged = true;
+    }
+
+    public void PlayNext()
+    {
+        if (CurrentIndex + 1 >= Queue.Count)
+            return;
+
+        CurrentIndex++;
+        PlayCurrent();
+
+        QueueChanged = true;
+    }
+
+    public void PlayPrevious()
+    {
+        if (CurrentIndex > 0)
+        {
+            CurrentIndex--;
+            PlayCurrent();
+            QueueChanged = true;
+        }
     }
 
     public void Pause() => _mediaPlayer.Pause();
-
     public void Stop()
     {
         _mediaPlayer.Stop();
-        _queue.Clear();
-        QueueChanged = true;
-        _currentTrack = null;
+        CurrentIndex = -1;
+        
     }
 
     public TimeSpan CurrentTime => TimeSpan.FromMilliseconds(_mediaPlayer.Time);
     public TimeSpan TotalDuration => TimeSpan.FromMilliseconds(_mediaPlayer.Length);
 }
+
 public class AudioTrack
 {
     public string Path { get; }
     public string Title { get; set; }
     public string Artist { get; set; }
+    public string Length { get; set; }
+
+    public override string ToString() => Title;
+
 
     public AudioTrack(string path)
     {
         Path = path;
         ResolveTags();
+        //Length = null;
+        Length = GetDurationAsync(Path).ToString();
     }
+
+    public TimeSpan GetDurationAsync(string path)
+    {
+        Core.Initialize();
+        using var libVLC = new LibVLC();
+        using var media = new Media(libVLC, new Uri(path));
+
+        media.Parse(MediaParseOptions.ParseLocal);
+        return TimeSpan.FromMilliseconds(media.Duration);
+    }
+
 
     private void ResolveTags()
     {

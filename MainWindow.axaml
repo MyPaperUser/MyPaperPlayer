@@ -58,7 +58,11 @@
       <ListBox ItemsSource="{Binding Queue}">
           <ListBox.ItemTemplate>
               <DataTemplate>
-                  <TextBlock Text="{Binding Title}" />
+                  <StackPanel Orientation="Horizontal" Spacing="10">
+                      <TextBlock Text="{Binding Title}" />
+                      <TextBlock Text="|" />
+                      <TextBlock Text="{Binding Length}" />
+                  </StackPanel>
               </DataTemplate>
           </ListBox.ItemTemplate>
       </ListBox>
