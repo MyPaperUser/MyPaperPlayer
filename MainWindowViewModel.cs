@@ -14,6 +14,8 @@ public class MainViewModel
     public void EnqueueTrack(AudioTrack track) => Backend.Enqueue(track);
 
     public void Play() => Backend.Play();
+    public void Pause() => Backend.Pause();
+    public void Stop() => Backend.Stop();
     public void Next() => Backend.PlayNext();
     public void Previous() => Backend.PlayPrevious();
 }
