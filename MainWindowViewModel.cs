@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MyPaperPlayer.Audio;
@@ -18,5 +19,8 @@ public class MainViewModel
     public void Stop() => Backend.Stop();
     public void Next() => Backend.PlayNext();
     public void Previous() => Backend.PlayPrevious();
+    public void ClearQueue() => Backend.ClearQueue();
+    public void SortQueue(List<AudioTrack> sortedTracks) => Backend.SortQueue(sortedTracks);
+    public void RemoveFromQueue(AudioTrack track) => Backend.RemoveFromQueue(track);
 }
 

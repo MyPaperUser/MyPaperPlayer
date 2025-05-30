@@ -13,7 +13,7 @@ namespace MyPaperPlayer;
 public partial class MainWindow : Window
 {
     public static MainWindow _instance = null;
-    internal AudioBackend player;
+    //internal AudioBackend player;
     private DispatcherTimer guiTimer;
     //public MainViewModel ViewModel { get; } = new();
     public MainViewModel ViewModel { get; } = new();
@@ -23,7 +23,7 @@ public partial class MainWindow : Window
         DataContext = ViewModel;
         _instance = this;
 
-        player = new AudioBackend();
+        //ViewModel.Backend = new AudioBackend();
 
         var track = new AudioTrack("/home/fierke/Nextcloud/Music/Ableton/_export/250501 - ATest 147.wav");
         var track2 = new AudioTrack("/home/fierke/Nextcloud/Music/Ableton/_export/250528 - ATest 150.wav");
@@ -33,7 +33,7 @@ public partial class MainWindow : Window
         // ViewModel.Queue ist die ObservableCollection, an die die ListBox gebunden ist
         
 
-        player.Play();
+        ViewModel.Play();
 
         guiTimer = new DispatcherTimer
         {
@@ -49,30 +49,30 @@ public partial class MainWindow : Window
 
     public void RefreshGUI()
     {
-        // var current = player.CurrentTrack;
-        // if (current == null || player == null)
+        // var current = ViewModel.Backend.CurrentTrack;
+        // if (current == null || ViewModel.Backend == null)
         //     return;
 
         try
         {
             // Zeit-Labels aktualisieren
-            var currentTime = TimeSpan.FromSeconds(Math.Floor(player.CurrentTime.TotalSeconds));
-            var totalTime = TimeSpan.FromSeconds(Math.Floor(player.TotalDuration.TotalSeconds));
+            var currentTime = TimeSpan.FromSeconds(Math.Floor(ViewModel.Backend.CurrentTime.TotalSeconds));
+            var totalTime = TimeSpan.FromSeconds(Math.Floor(ViewModel.Backend.TotalDuration.TotalSeconds));
             var timeLeft = totalTime - currentTime;
 
             CurrentTimeLabel.Content = $"{currentTime:hh\\:mm\\:ss} / -{timeLeft:hh\\:mm\\:ss}";
             TotalTimeLabel.Content = $"{totalTime:hh\\:mm\\:ss}";
 
             // Slider setzen
-            SldTime.Maximum = player.TotalDuration.TotalMilliseconds;
-            SldTime.Value = player.CurrentTime.TotalMilliseconds;
+            SldTime.Maximum = ViewModel.Backend.TotalDuration.TotalMilliseconds;
+            SldTime.Value = ViewModel.Backend.CurrentTime.TotalMilliseconds;
 
 
             // Queue aktualisieren, falls sich was geändert hat
-            if (player.QueueChanged)
+            if (ViewModel.Backend.QueueChanged)
             {
                 //QueueListBox.Items.Clear();
-                // foreach(var track in player._queue)
+                // foreach(var track in ViewModel.Backend._queue)
                 // {
                 //     var item = new ListBoxItem
                 //     {
@@ -83,12 +83,12 @@ public partial class MainWindow : Window
                 // }
 
                 // QueueItems.Clear();
-                // foreach (var track in player.Queue)
+                // foreach (var track in ViewModel.Backend.Queue)
                 // {
                 //     QueueItems.Add(track);
                 // }
 
-                player.QueueChanged = false;
+                ViewModel.Backend.QueueChanged = false;
             }
 
             AdaptPlayButtonIcon();
@@ -105,14 +105,14 @@ public partial class MainWindow : Window
     public void BtnPlay_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
 
-        if (player.IsPlaying)
+        if (ViewModel.Backend.IsPlaying)
         {
-            player.Pause();
+            ViewModel.Pause();
             //BtnPlay.Content = "Play";
         }
         else
         {
-            player.Play();
+            ViewModel.Play();
             //BtnPlay.Content = "Pause";
         }
     }
@@ -120,22 +120,22 @@ public partial class MainWindow : Window
 
     public void BtnNext_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-
+        ViewModel.Next();
     }
 
     public void BtnBack_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-
+        ViewModel.Previous();
     }
 
     public void BtnStop_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        player.Stop();
+        ViewModel.Stop();
     }
 
     public void AdaptPlayButtonIcon()
     {
-        if (player.IsPlaying)
+        if (ViewModel.Backend.IsPlaying)
         {
             BtnPlayIcon.Source = new Bitmap("Assets/Icons/pause.png");
 
@@ -164,11 +164,11 @@ public partial class MainWindow : Window
         foreach (var file in files)
         {
             var track = new AudioTrack(file);
-            player.Enqueue(track);
+            ViewModel.EnqueueTrack(track);
             QueueItems.Add(track);
         }
 
-        player.QueueChanged = true;
+        ViewModel.Backend.QueueChanged = true;
     }
 
 
@@ -176,19 +176,19 @@ public partial class MainWindow : Window
     {
         if (QueueDataGrid.SelectedItem is not AudioTrack selectedTrack) return;
 
-        player.RemoveFromQueue(selectedTrack);
+        ViewModel.RemoveFromQueue(selectedTrack);
         QueueItems.Remove(selectedTrack);
 
-        player.QueueChanged = true;
+        ViewModel.Backend.QueueChanged = true;
     }
 
 
     public void BtnClearQueue_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        player.ClearQueue();
+        ViewModel.ClearQueue();
         QueueItems.Clear();
 
-        player.QueueChanged = true;
+        ViewModel.Backend.QueueChanged = true;
     }
 
     public void BtnSortQueue_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -201,8 +201,8 @@ public partial class MainWindow : Window
             QueueItems.Add(track);
         }
 
-        player.SortQueue(sorted);
-        player.QueueChanged = true;
+        ViewModel.SortQueue(sorted);
+        ViewModel.Backend.QueueChanged = true;
     }
 
     public void BtnShuffleQueue_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -216,8 +216,8 @@ public partial class MainWindow : Window
             QueueItems.Add(track);
         }
 
-        player.SortQueue(shuffled); // dieselbe Methode wie bei sortieren
-        player.QueueChanged = true;
+        ViewModel.SortQueue(shuffled); // dieselbe Methode wie bei sortieren
+        ViewModel.Backend.QueueChanged = true;
     }
 
     public void BtnShowInfo_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
